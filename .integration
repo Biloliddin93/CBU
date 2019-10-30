@@ -1,1 +1,4 @@
-command = ./CBU.py
+command = python ./_cbu.py
+settings_file_name = settings.json
+default_schedule = 0 0 3 * * ?
+read_from_stdout = false
