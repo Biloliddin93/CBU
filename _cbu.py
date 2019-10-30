@@ -2,7 +2,7 @@ import httplib2 as http
 import json
 import requests
 import dateutil.parser
-
+import base64
 try:
     from urlparse import urlparse
 except ImportError:
@@ -30,12 +30,18 @@ response, currency = h.request(
 # parse content with the json module
 dataa = json.loads(currency)
 
+with open('pass.json', "rb") as PFile:
+    passwordData = json.loads(PFile.read().decode('utf-8'))
+user = passwordData["UserName"]
+password = passwordData["Password"]
+site = passwordData["URL"]
 
-urls = 'https://pmi.gov.uz/api/v3/trackor_types/CBU/trackors'
+urls = site
+auths = base64.b64encode(bytes(user+':'+password, 'utf-8'))
 headersx = {'Content-type': 'application/json',  # Определение типа данных
            'Accept': 'text/plain',
            'Content-Encoding': 'utf-8',
-            'Authorization': 'Basic Qmlsb2xpZGRpbm5hcG06MTIzNDU2Nzg5MA=='
+            'Authorization': 'Basic '+auths
             }
 
 le = len(dataa)
