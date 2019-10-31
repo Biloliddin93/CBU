@@ -37,13 +37,13 @@ password = passwordData["Password"]
 site = passwordData["URL"]
 
 urls = site
-auths = base64.b64encode(bytes(user+':'+password, 'utf-8'))
+
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 headersx = {'Content-type': 'application/json',
            'Accept': 'text/plain',
            'Content-Encoding': 'utf-8',
-            'Authorization': 'Basic '+auths
+            'Authorization': user
             }
 
 le = len(dataa)
