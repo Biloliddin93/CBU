@@ -60,6 +60,6 @@ while i < le:
   jsonx +='"CBU_RATE": "'+dataa[i]['Rate']+'",'
   jsonx +='"CBU_STATUS": 1  }}'
   
-  answer = requests.post(urls, data=json.dumps(json.loads(jsonx)), headers=headersx)
+  answer = requests.post(urls, data=json.dumps(json.loads(jsonx)), headers=headersx,timeout=500.0)
   print(answer)
   i += 1
