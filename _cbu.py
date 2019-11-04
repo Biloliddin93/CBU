@@ -6,11 +6,11 @@ import json
 with open('settings.json', 'rb') as PFile:
     password_data = json.loads(PFile.read().decode('utf-8'))
 
-url = password_data['URL']
+url = password_data['URLSITE']
 login = password_data['UserName']
 password = password_data['Password']
 
-cbu_list_request = onevizion.Trackor(trackorType='CBU', URL=URLSITE, userName=UserName, password=Password)
+cbu_list_request = onevizion.Trackor(trackorType='CBU', URL=url, userName=UserName, password=Password)
 
 headers = {'Content-type':'application/json','Content-Encoding':'utf-8'}
 url_cbu = 'http://cbu.uz/ru/arkhiv-kursov-valyut/json/'
