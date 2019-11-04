@@ -1,65 +1,31 @@
-import httplib2 as http
-import json
 import requests
-import dateutil.parser
-import base64
-try:
-    from urlparse import urlparse
-except ImportError:
-    from urllib.parse import urlparse
+import onevizion
+import datetime
+import json
 
+with open('settings.json', 'rb') as PFile:
+    password_data = json.loads(PFile.read().decode('utf-8'))
 
+url = password_data['URL']
+login = password_data['UserName']
+password = password_data['Password']
 
-uri = 'http://cbu.uz/ru/arkhiv-kursov-valyut/json/'
+cbu_list_request = onevizion.Trackor(trackorType='CBU', URL=URLSITE, userName=UserName, password=Password)
 
+headers = {'Content-type':'application/json','Content-Encoding':'utf-8'}
+url_cbu = 'http://cbu.uz/ru/arkhiv-kursov-valyut/json/'
+answer = requests.get(url_cbu, headers=headers)
+response = answer.json()
 
-target = urlparse(uri)
-method = 'GET'
-body = ''
-
-h = http.Http()
-
-
-response, currency = h.request(
-        target.geturl(),
-        method,
-        body
-      )
-
-# assume that content is a json reply
-# parse content with the json module
-dataa = json.loads(currency)
-
-with open('pass.json', "rb") as PFile:
-    passwordData = json.loads(PFile.read().decode('utf-8'))
-user = passwordData["UserName"]
-password = passwordData["Password"]
-site = passwordData["URL"]
-
-urls = site
-
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-headersx = {'Content-type': 'application/json',
-           'Accept': 'text/plain',
-           'Content-Encoding': 'utf-8',
-            'Authorization': user
-            }
-
-le = len(dataa)
-
-i = 0
-while i < le:
-  jsonx = '{ "fields":{ "CBU_CCY": "'+dataa[i]['Ccy']+'",'
-  jsonx +='"CBU_CCYNM_EN": "'+dataa[i]['CcyNm_EN']+'",'
-  jsonx +='"CBU_CCYNM_RU": "'+dataa[i]['CcyNm_RU']+'",'
-  jsonx +='"CBU_CCYNM_UZ": "'+dataa[i]['CcyNm_UZ']+'",'
-  jsonx +='"CBU_CODE": "'+dataa[i]['Code']+'",'
-  jsonx +='"CBU_DATE": "'+str( dateutil.parser.parse(dataa[i]['Date']).date())+'",'
-  jsonx +='"CBU_NOMINAL": "'+dataa[i]['Nominal']+'",'
-  jsonx +='"CBU_RATE": "'+dataa[i]['Rate']+'",'
-  jsonx +='"CBU_STATUS": 1  }}'
-  
-  answer = requests.post(urls, data=json.dumps(json.loads(jsonx)), headers=headersx,timeout=500.0)
-  print(answer)
-  i += 1
+for data in response:
+    cbu_list_request.create(
+        fields={'CBU_CCY':data['Ccy'],
+                'CBU_CCYNM_EN':data['CcyNm_EN'],
+                'CBU_CCYNM_RU':data['CcyNm_RU'],
+                'CBU_CCYNM_UZ':data['CcyNm_UZ'],
+                'CBU_CODE':data['Code'],
+                'CBU_DATE':str((datetime.datetime.now()).strftime("%Y-%m-%d")),
+                'CBU_NOMINAL':data['Nominal'],
+                'CBU_RATE':data['Rate'],
+                'CBU_STATUS':1}
+        )
